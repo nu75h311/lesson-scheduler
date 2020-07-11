@@ -56,7 +56,7 @@ a:hover small {
 }
 
 .wrapper {
-  width:860px;
+  width:1024px;
   margin:0 auto;
 }
 
@@ -105,7 +105,9 @@ img {
 }
 
 header {
-  width:270px;
+  padding: 0.5em 0 0 0.5em;
+  background-color: gainsboro;
+  width:360px;
   float:left;
   position:fixed;
   -webkit-font-smoothing:subpixel-antialiased;
@@ -123,7 +125,7 @@ ul.downloads {
   background: #f4f4f4;
   border-radius:5px;
   border:1px solid #e0e0e0;
-  width:270px;
+  width:360px;
 }
 
 .downloads li {
@@ -177,7 +179,7 @@ strong {
 }
 
 section {
-  width:500px;
+  width:650px;
   float:right;
   padding-bottom:50px;
 }
@@ -194,7 +196,7 @@ hr {
 }
 
 footer {
-  width:270px;
+  width:360px;
   float:left;
   position:fixed;
   bottom:50px;
@@ -231,8 +233,8 @@ footer {
 
   header ul {
     position:absolute;
-    right:50px;
-    top:52px;
+    right:65px;
+    top:65px;
   }
 }
 
@@ -242,7 +244,7 @@ footer {
   }
 
   header {
-    padding:0;
+    padding:0.5em 0 0 0.5em;
   }
 
   header ul, header p.view {
