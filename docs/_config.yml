@@ -3,8 +3,10 @@ description: >- # this means to ignore newlines until "baseurl:"
   A study on backend services applications.
 
 # Build settings
+repository: nu75h311/lesson-scheduler
 theme: jekyll-theme-minimal
 github: [metadata]
 baseurl: /lesson-scheduler
 plugins:
   - jekyll-feed
+  - jekyll-github-metadata

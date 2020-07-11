@@ -39,6 +39,8 @@
                 {% for post in site.posts %}
                 <li><a href="{{site.baseurl}}{{post.url}}">{{ post.title }}</a></li>
                 {% endfor %}
+                {{site.github.repository_url}}
+
             </ul>
         </header>
         <section>
@@ -47,7 +49,8 @@
 
         </section>
         <footer>
-            <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
+            <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{- site.github.owner_name -}}</a>
+            </p>
             <p><small>Hosted on GitHub Pages</small></p>
         </footer>
     </div>
