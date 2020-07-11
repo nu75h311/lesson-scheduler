@@ -1,1 +1,9 @@
+title: lesson-scheduler
+description: >- # this means to ignore newlines until "baseurl:"
+  A study on backend services applications.
+
+# Build settings
 theme: jekyll-theme-minimal
+github: [metadata]
+plugins:
+  - jekyll-feed
