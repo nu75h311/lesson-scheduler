@@ -1,11 +1,13 @@
 title: lesson-scheduler
 description: >- # this means to ignore newlines until "baseurl:"
-  A study on backend services applications.
+  A study on backend service applications.
 
 # Build settings
-repository: nu75h311/lesson-scheduler
 theme: jekyll-theme-minimal
-github: [metadata]
+github:
+  repo_url: https://github.com/nu75h311/lesson-scheduler
+  owner_url: https://github.com/nu75h311
+  owner_name: nu75h311
 baseurl: /lesson-scheduler
 plugins:
   - jekyll-feed
