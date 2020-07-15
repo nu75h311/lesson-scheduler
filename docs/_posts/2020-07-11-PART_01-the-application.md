@@ -35,19 +35,18 @@ For the first epic, we came up with these scenarios:
 >> **Rule**: Email in User registration must be unique
 >>> **Scenario**: the one where a person tries to register with an unused email.  
 >>> → registration succeeds
->>
+> >
 >>> **Scenario**: the one where a person tries to register with an already used email.  
 >>> → registration fails
->>
+> >
 >> **Rule**: First name, Last name and Email are mandatory for registration
 >>> **Scenario**: the one where a person tries to register with first name, last name and email.  
 >>> → registration succeeds
->>
+> >
 >>> **Scenario**: the one where a person tries to register without one of the mandatory fields fields.  
 >>> → registration fails
 
 Nice, looks like we have something close to [executable specifications](https://johnfergusonsmart.com/bdd-treaties/). Let's get a little bit more technical.
-
 
 ## System Tests
 
@@ -58,7 +57,8 @@ There are many steps involved to make that happen, but let's first set up our pr
 For the service applications I will be using [Spring Boot](https://spring.io/projects/spring-boot) via [Maven](https://maven.apache.org/download.cgi) with [Java 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) - and before I get shamed into oblivion, the only reason why I am using this version is because on the background I will also be experimenting with [Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops), which (by the time of this writing) only supports up to 11 out of the box. Feel free to use any other version you like.
 
 Ok, so let's head over to [Spring Initializr](https://start.spring.io/) and create a Maven Java project. I will use Spring Boot version **2.3.1** with metadata as follows:
-```yml
+
+``` yml
 Group: com.lesson-scheduler
 Artifact: user-service
 Name: user-service
@@ -72,6 +72,38 @@ Dependencies:
     Spring Configuration Processor
     Spring Web
 ```
-The only necessary dependencies to follow this guide are Lombok and Spring Web. The others are just tools to make developers' lives easier. We will be using many other Spring dependencies, but we'll add them when we need them - so it's easier to understand why they are there.
 
-Generate, download and extract the project. Open it on your favorite IDE.
+The only necessary dependencies to follow this guide are Lombok and Spring Web. The others are just tools to make developers' lives easier. We will be using many other Spring dependencies, but we'll add them when we need them - so it's easier to understand why they are there.  
+Also, because not everybody is familiar with the Spring framework, whenever there is a new annotation introduced in this series I will try to leave a brief explanation of what it does and maybe why use it. The how is beyond our scope.
+
+Generate, download and extract the project. Open it on your favorite IDE.  
+Now head over to your `pom.xml` file and add the following dependencies:
+
+``` xml
+<properties>
+    <junit.version>5.5.2</junit.version>
+    <cucumber.version>6.2.2</cucumber.version>
+</properties>
+...
+<dependencies>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>io.cucumber</groupId>
+        <artifactId>cucumber-java</artifactId>
+        <version>${cucumber.version}</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>io.cucumber</groupId>
+        <artifactId>cucumber-junit</artifactId>
+        <version>${cucumber.version}</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
