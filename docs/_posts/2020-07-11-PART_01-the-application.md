@@ -218,5 +218,5 @@ I am using a custom `Persona` object so that generating valid and invalid `json`
 
 There could be other layers for these high level steps, but for the sake of brevity let's keep it like that. The scenarios can now be run, so we will know if the user registration feature works once we have something running.
 
-You can find the full code for this part here.
+You can find the full code for this part [here](https://github.com/nu75h311/lesson-scheduler/tree/part-01-the-application).
 Next, we start things bottom up.
