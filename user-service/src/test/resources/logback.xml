@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This is to Get rid of extensive org.apache.http DEBUG logging when using rest-assured -->
+<configuration>
+    <logger name="org.apache" level="ERROR"/>
+    <logger name="httpclient" level="ERROR"/>
+</configuration>

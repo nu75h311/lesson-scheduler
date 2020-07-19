@@ -81,17 +81,12 @@ Now head over to your `pom.xml` file and add the following dependencies:
 
 ``` xml
 <properties>
-    <junit.version>5.5.2</junit.version>
     <cucumber.version>6.2.2</cucumber.version>
+    <rest-assured.version>4.3.1</rest-assured.version>
+    <maven.failsafe.plugin.version>2.22.0</maven.failsafe.plugin.version>
 </properties>
 ...
 <dependencies>
-    <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
-    </dependency>
     <dependency>
         <groupId>io.cucumber</groupId>
         <artifactId>cucumber-java</artifactId>
@@ -104,6 +99,124 @@ Now head over to your `pom.xml` file and add the following dependencies:
         <version>${cucumber.version}</version>
         <scope>test</scope>
     </dependency>
+    <dependency><!-- so Cucumber works with JUnit 5 -->
+        <groupId>io.cucumber</groupId>
+        <artifactId>cucumber-junit-platform-engine</artifactId>
+        <version>${cucumber.version}</version>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>${rest-assured.version}</version>
+        <scope>test</scope>
+    </dependency>
 </dependencies>
+
+<build>
+    <plugins>
+        ...
+        <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>${maven.failsafe.plugin.version}</version>
+            <configuration>
+                <includes>
+                    <include>**/CucumberRunner.java</include>
+                </includes>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>integration-test</goal>
+                        <goal>verify</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
 ```
 
+Having the dependencies to run tests with Cucumber, we can now create the `user_registration.feature` file under `src/test/resources/com/lessonscheduler/user/e2e` with the content:
+
+``` Gherkin
+Feature: User registration
+
+  Rule: Email in User registration must be unique
+
+    Scenario: Successful registration with unused email
+      When Abel attempts to register with his email
+      Then he should see that the registration was successful
+
+    Scenario: Failed registration with used email
+      Given that Cain already registered with his email
+      When he attempts to register with the same email
+      Then he should see that the registration failed
+
+  Rule: First name, Last name and Email are mandatory for registration
+
+    Scenario: Successful registration with all mandatory fields
+      When Abel attempts to register using first and last names and email
+      Then he should see that the registration was successful
+
+    Scenario Outline: Failed registration with missing mandatory field
+      When Cain attempts to register without <mandatory_field>
+      Then he should see that the registration failed
+
+      Examples:
+        | mandatory_field |
+        | first name      |
+        | last name       |
+        | email           |
+```
+
+Now, to run these scenarios with Maven we need a test class pointing to Cucumber. In the `pom.xml` we already included the failsafe plugin configured to look for this class. So let's create a `CucumberRunner.java` under the package `com.lessonscheduler.user.e2e` in the test folder, and the content is this:
+
+``` java
+import io.cucumber.junit.platform.engine.Cucumber;
+
+@Cucumber
+public class CucumberRunner {
+}
+```
+
+And the Cucumber options in a `junit-platform.properties` file under `src/test/resources` (otherwise maven will not picj them up) with:
+
+``` properties
+cucumber.glue=com/lessonscheduler/user/e2e/steps
+cucumber.plugin=pretty, html:target/cucumber/cucumberReport.html
+```
+
+And finally, to know what to do when it gets to the steps in the feature file, Cucumber needs a steps definition class. Lets create the `RegistrationStepDefs.java` under `com.lessonscheduler.user.e2e.steps`. Here is part of it. The rest is in the repo:
+
+``` java
+public class RegistrationStepDefs {
+
+    private static final String SERVICE_BASE_URL = "http://localhost:8081/api/v1";
+    Persona person;
+    Response response;
+
+    @Given("that {word} already registered with his/her email")
+    @When("{word} attempts to register using first and last names and email")
+    @When("{word} attempts to register with his/her email")
+    public void person_attempts_to_register_with_valid_data(String personName) {
+        person = new Persona(personName);
+
+        response =
+                given().auth().basic("admin", "password")
+                       .contentType(JSON)
+                       .body(person.getValidRegistrationBody().toString())
+                       .when().post(SERVICE_BASE_URL + "/users");
+    }
+    ...
+}
+```
+Note that the `SERVICE_BASE_URL` is where we expect the service to be running when it's possible to run the tests against it - we can change it later if needed.
+
+I am using a custom `Persona` object so that generating valid and invalid `json` bodies is abstracted away. The `response` is also a separated so it can be checked in different steps.
+
+There could be other layers for these high level steps, but for the sake of brevity let's keep it like that. The scenarios can now be run, so we will know if the user registration feature works once we have something running.
+
+You can find the full code for this part here.
+Next, we start things bottom up.
