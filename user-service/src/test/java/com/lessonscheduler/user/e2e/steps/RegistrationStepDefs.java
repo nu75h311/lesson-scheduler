@@ -24,20 +24,16 @@ public class RegistrationStepDefs {
     public void person_attempts_to_register_with_valid_data(String personName) {
         person = new Persona(personName);
 
-        response =
-                given().auth().basic("admin", "password")
-                       .contentType(JSON)
-                       .body(person.getValidRegistrationBody().toString())
-                       .when().post(SERVICE_BASE_URL + "/users");
+        response = given().contentType(JSON)
+                          .body(person.getValidRegistrationBody().toString())
+                          .when().post(SERVICE_BASE_URL + "/users");
     }
 
     @When("(s)he attempts to register with the same email")
     public void person_attempts_to_register_with_same_email() {
-        response =
-                given().auth().basic("admin", "password")
-                       .contentType(JSON)
-                       .body(person.getValidRegistrationBody().toString())
-                       .when().post(SERVICE_BASE_URL + "/users");
+        response = given().contentType(JSON)
+                          .body(person.getValidRegistrationBody().toString())
+                          .when().post(SERVICE_BASE_URL + "/users");
     }
 
     @Then("(s)he should see that the registration was successful")
@@ -56,11 +52,9 @@ public class RegistrationStepDefs {
     public void person_attempts_to_register_without_a_field(String personName, String missingField) {
         person = new Persona(personName);
 
-        response =
-                given().auth().basic("admin", "password")
-                       .contentType(JSON)
-                       .body(person.getInvalidRegistrationBodyWithout(missingField).toString())
-                       .when().post(SERVICE_BASE_URL + "/users");
+        response = given().contentType(JSON)
+                          .body(person.getInvalidRegistrationBodyWithout(missingField).toString())
+                          .when().post(SERVICE_BASE_URL + "/users");
     }
 
     @Then("(s)he should see that the registration failed for existing email")
