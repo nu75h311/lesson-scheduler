@@ -166,8 +166,8 @@ Feature: User registration
 
       Examples:
         | mandatory_field |
-        | first name      |
-        | last name       |
+        | firstName       |
+        | lastName        |
         | email           |
 ```
 
@@ -181,7 +181,7 @@ public class CucumberRunner {
 }
 ```
 
-And the Cucumber options in a `junit-platform.properties` file under `src/test/resources` (otherwise maven will not picj them up) with:
+And the Cucumber options in a `junit-platform.properties` file under `src/test/resources` (otherwise maven will not pick them up) with:
 
 ``` properties
 cucumber.glue=com/lessonscheduler/user/e2e/steps
@@ -203,18 +203,17 @@ public class RegistrationStepDefs {
     public void person_attempts_to_register_with_valid_data(String personName) {
         person = new Persona(personName);
 
-        response =
-                given().auth().basic("admin", "password")
-                       .contentType(JSON)
-                       .body(person.getValidRegistrationBody().toString())
-                       .when().post(SERVICE_BASE_URL + "/users");
+        response = given().contentType(JSON)
+                          .body(person.getValidRegistrationBody().toString())
+                          .when().post(SERVICE_BASE_URL + "/users");
     }
     ...
 }
 ```
 Note that the `SERVICE_BASE_URL` is where we expect the service to be running when it's possible to run the tests against it - we can change it later if needed.
 
-I am using a custom `Persona` object so that generating valid and invalid `json` bodies is abstracted away. The `response` is also a separated so it can be checked in different steps.
+I am using a custom `Persona` object so that generating valid and invalid `json` bodies is abstracted away. The `response` is also a separated so it can be checked in different steps.  
+For the API calls it's basic [Rest-assured](http://rest-assured.io/) request and reponse manipulation.
 
 There could be other layers for these high level steps, but for the sake of brevity let's keep it like that. The scenarios can now be run, so we will know if the user registration feature works once we have something running.
 
