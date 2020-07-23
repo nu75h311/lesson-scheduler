@@ -72,7 +72,7 @@ public class RegistrationStepDefs {
                 .log().ifValidationFails()
                 .statusCode(400)
                 .contentType(TEXT)
-                .body(containsString("There are mandaory fields missing"));
+                .body(containsString("There are mandatory fields missing"));
     }
 
 }
