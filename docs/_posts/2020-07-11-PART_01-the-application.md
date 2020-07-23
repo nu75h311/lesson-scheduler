@@ -9,7 +9,10 @@ author: adriano
 ## On this page
 
 1. Define some business scenarios, [BDD](#bdd) style
-2. Write [high level tests](#system-tests)
+2. Create a [Spring Boot](#spring-initializr) project
+3. Write [high level tests](#system-tests) using Cucumber
+4. Make the tests [runnable](#maven-verify) via Maven
+5. Implement the scenarios [steps definitions](#steps-definitions)
 
 ## BDD
 
@@ -48,7 +51,7 @@ For the first epic, we came up with these scenarios:
 
 Nice, looks like we have something close to [executable specifications](https://johnfergusonsmart.com/bdd-treaties/). Let's get a little bit more technical.
 
-## System Tests
+## Spring Initializr
 
 The team [discovered](https://leanpub.com/bddbooks-discovery) some examples of what the application is suppoed to do at a very high level. From here we will try to [formulate](https://leanpub.com/bddbooks-formulation) these examples into acceptance criteria using the [Gherkin](https://cucumber.io/docs/gherkin/reference/) syntax, and we'll do that while writing automated tests with [Cucumber](https://cucumber.io/).
 
@@ -76,14 +79,16 @@ Dependencies:
 The only necessary dependencies to follow this guide are Lombok and Spring Web. The others are just tools to make developers' lives easier. We will be using many other Spring dependencies, but we'll add them when we need them - so it's easier to understand why they are there.  
 Also, because not everybody is familiar with the Spring framework, whenever there is a new annotation introduced in this series I will try to leave a brief explanation of what it does and maybe why use it. The how is beyond our scope.
 
-Generate, download and extract the project. Open it on your favorite IDE.  
+Generate, download and extract the project. Open it on your favorite IDE.
+
+## System Tests
+
 Now head over to your `pom.xml` file and add the following dependencies:
 
 ``` xml
 <properties>
     <cucumber.version>6.2.2</cucumber.version>
     <rest-assured.version>4.3.1</rest-assured.version>
-    <maven.failsafe.plugin.version>2.22.0</maven.failsafe.plugin.version>
 </properties>
 ...
 <dependencies>
@@ -113,29 +118,6 @@ Now head over to your `pom.xml` file and add the following dependencies:
         <scope>test</scope>
     </dependency>
 </dependencies>
-
-<build>
-    <plugins>
-        ...
-        <plugin>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <version>${maven.failsafe.plugin.version}</version>
-            <configuration>
-                <includes>
-                    <include>**/CucumberRunner.java</include>
-                </includes>
-            </configuration>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>integration-test</goal>
-                        <goal>verify</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-</build>
 ```
 
 Having the dependencies to run tests with Cucumber, we can now create the `user_registration.feature` file under `src/test/resources/com/lessonscheduler/user/e2e` with the content:
@@ -171,7 +153,41 @@ Feature: User registration
         | email           |
 ```
 
-Now, to run these scenarios with Maven we need a test class pointing to Cucumber. In the `pom.xml` we already included the failsafe plugin configured to look for this class. So let's create a `CucumberRunner.java` under the package `com.lessonscheduler.user.e2e` in the test folder, and the content is this:
+## Maven verify
+
+Now, to run these scenarios with Maven we need a test class pointing to Cucumber. In the `pom.xml` we will include the failsafe plugin configured to look for this class, and run it during the verify phase of the build:
+
+```xml
+<properties>
+    ...
+    <maven.failsafe.plugin.version>2.22.0</maven.failsafe.plugin.version>
+</properties>
+...
+<build>
+    <plugins>
+        ...
+        <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>${maven.failsafe.plugin.version}</version>
+            <configuration>
+                <includes>
+                    <include>**/CucumberRunner.java</include>
+                </includes>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>integration-test</goal>
+                        <goal>verify</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+Then let's create the `CucumberRunner.java` under the package `com.lessonscheduler.user.e2e` in the test folder, and the content is this:
 
 ``` java
 import io.cucumber.junit.platform.engine.Cucumber;
@@ -187,6 +203,8 @@ And the Cucumber options in a `junit-platform.properties` file under `src/test/r
 cucumber.glue=com/lessonscheduler/user/e2e/steps
 cucumber.plugin=pretty, html:target/cucumber/cucumberReport.html
 ```
+
+## Steps Definitions
 
 And finally, to know what to do when it gets to the steps in the feature file, Cucumber needs a steps definition class. Lets create the `RegistrationStepDefs.java` under `com.lessonscheduler.user.e2e.steps`. Here is part of it. The rest is in the repo:
 
