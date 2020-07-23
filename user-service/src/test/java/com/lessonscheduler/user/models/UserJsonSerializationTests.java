@@ -17,17 +17,17 @@ import org.springframework.boot.test.json.JacksonTester;
 
 @Tag("model")
 @DisplayName("User model layer tests - JSON serialization")
-public class UserJsonSerializationTests {
+class UserJsonSerializationTests {
 
-    private final String jsonValidUser =
+    private static final String JSON_VALID_USER =
             "{\"firstName\" : \"John\",\"lastName\" : \"Doe\",\"email\" : \"john.doe@example.com\"}";
-    private final String jsonMissingFirstNameUser =
+    private static final String JSON_MISSING_FIRST_NAME_USER =
             "{\"lastName\" : \"Doe\",\"email\" : \"john.doe@example.com\"}";
-    private final String jsonMissingLastNameUser =
+    private static final String JSON_MISSING_LAST_NAME_USER =
             "{\"firstName\" : \"John\",\"email\" : \"john.doe@example.com\"}";
-    private final String jsonMissingEmailUser =
+    private static final String JSON_MISSING_EMAIL_USER =
             "{\"firstName\" : \"John\",\"lastName\" : \"Doe\"}";
-    private final String jsonUserExtraFields =
+    private static final String JSON_USER_EXTRA_FIELDS =
             "{\"firstName\" : \"John\",\"lastName\" : \"Doe\",\"email\" : \"john.doe@example.com\",\"extraField\" : \"extraValue\"}";
     private JacksonTester<User> json;
 
@@ -39,26 +39,32 @@ public class UserJsonSerializationTests {
 
     @Test
     @DisplayName("Parse valid User json to object")
-    public void testUserValidParseJson() throws IOException {
-        User user = new User.UserBuilder().firstName("John").lastName("Doe").email("john.doe@example.com").build();
+    void testUserValidParseJson() throws IOException {
+        User user = new User.UserBuilder().firstName("John")
+                                          .lastName("Doe")
+                                          .email("john.doe@example.com")
+                                          .build();
 
-        assertThat(this.json.parse(jsonValidUser)).isEqualTo(user);
+        assertThat(this.json.parse(JSON_VALID_USER)).isEqualTo(user);
     }
 
     @Test
     @DisplayName("Marshall User object to json")
-    public void testUserValidMarshallObjectToJson() throws IOException {
-        User user = new User.UserBuilder().firstName("John").lastName("Doe").email("john.doe@example.com").build();
+    void testUserValidMarshallObjectToJson() throws IOException {
+        User user = new User.UserBuilder().firstName("John")
+                                          .lastName("Doe")
+                                          .email("john.doe@example.com")
+                                          .build();
 
-        assertThat(this.json.write(user)).isEqualTo(jsonValidUser);
+        assertThat(this.json.write(user)).isEqualTo(JSON_VALID_USER);
     }
 
     @DisplayName("Throw exception when parsing User json with missing fields")
     @ParameterizedTest(name = "Validate that ''{0}'' is required")
-    @CsvSource({"firstName, " + jsonMissingFirstNameUser,
-                "lastName, " + jsonMissingLastNameUser,
-                "email, " + jsonMissingEmailUser})
-    public void testUserMissingMandatoryField(ArgumentsAccessor arguments) {
+    @CsvSource({"firstName, " + JSON_MISSING_FIRST_NAME_USER,
+            "lastName, " + JSON_MISSING_LAST_NAME_USER,
+            "email, " + JSON_MISSING_EMAIL_USER})
+    void testUserMissingMandatoryField(ArgumentsAccessor arguments) {
         // this trouble is so the display names of the tests show nicely
         String incompleteJsonUser = arguments.getString(1) + "," + arguments.getString(2);
         assertThrows(MismatchedInputException.class, () -> this.json.parse(incompleteJsonUser));
@@ -66,9 +72,12 @@ public class UserJsonSerializationTests {
 
     @Test
     @DisplayName("Ignore extra fields in json to be parsed")
-    public void testUserIgnoreExtraField() throws IOException {
-        User user = new User.UserBuilder().firstName("John").lastName("Doe").email("john.doe@example.com").build();
+    void testUserIgnoreExtraField() throws IOException {
+        User user = new User.UserBuilder().firstName("John")
+                                          .lastName("Doe")
+                                          .email("john.doe@example.com")
+                                          .build();
 
-        assertThat(this.json.parse(jsonUserExtraFields)).isEqualTo(user);
+        assertThat(this.json.parse(JSON_USER_EXTRA_FIELDS)).isEqualTo(user);
     }
 }
