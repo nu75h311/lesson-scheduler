@@ -6,7 +6,7 @@ tags: business bdd system_tests
 author: adriano
 ---
 
-## On this page
+### On this page
 
 1. Define some business scenarios, [BDD](#bdd) style
 2. Create a [Spring Boot](#spring-initializr) project
