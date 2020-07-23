@@ -17,31 +17,33 @@
 
 <body>
     <div class="wrapper">
-        <header>
-            <h1><a href="{{ "/" | absolute_url }}">{{ site.title }}</a></h1>
-
-            <p>{{ site.description }}</p>
-
-            <p class="view"><a href="{{ site.github.repo_url }}">View the Project on GitHub
-                    <small>{{ site.github.repo_url }}</small></a></p>
-
-            <ul class="parts">
-                {% assign ordered_posts = site.posts | sort %}
-                {% for post in ordered_posts %}
-                <li><a href="{{site.baseurl}}{{post.url}}">{{ post.title }}</a></li>
-                {% endfor %}
-            </ul>
-        </header>
-        <section>
+        <div class="side-menu">
+            <header>
+                <h1><a href="{{ "/" | absolute_url }}">{{ site.title }}</a></h1>
+    
+                <p>{{ site.description }}</p>
+    
+                <p class="view"><a href="{{ site.github.repo_url }}">View the Project on GitHub
+                        <small>{{ site.github.repo_url }}</small></a></p>
+    
+                <ul class="parts">
+                    {% assign ordered_posts = site.posts | sort %}
+                    {% for post in ordered_posts %}
+                    <li><a href="{{site.baseurl}}{{post.url}}">{{ post.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </header>
+            <footer>
+                <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>
+                </p>
+                <p><small>Hosted on GitHub Pages</small></p>
+            </footer>
+        </div>
+        <div class="content">
 
             {{ content }}
 
-        </section>
-        <footer>
-            <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>
-            </p>
-            <p><small>Hosted on GitHub Pages</small></p>
-        </footer>
+        </div>
     </div>
     <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
     {% if site.google_analytics %}
