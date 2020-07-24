@@ -1,8 +1,7 @@
 name: Maven build with tests
-
 on:
   pull_request:
-    branches: [ '*' ]
+    branches: '*'
 
 jobs:
   build:
@@ -21,6 +20,8 @@ jobs:
   merge_pr:
     needs: build
     name: auto merge pull pull_request
+    runs-on: ubuntu-latest
+    
     steps:
       - name: merging pull with label 'auto-pr'
         uses: sudo-bot/action-pull-request-merge@v1.1.1
