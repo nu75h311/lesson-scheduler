@@ -2,7 +2,9 @@ name: Build and merge PR
 on:
   pull_request:
     types:
-    - labeled
+      - opened
+      - labeled
+      - edited
 
 jobs:
         
