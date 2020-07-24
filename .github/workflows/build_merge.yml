@@ -1,0 +1,36 @@
+name: Create pull request to part 02
+on:
+  pull_request:
+    branches: '*'  # Support wildcard matching
+
+jobs:
+        
+  build:
+    name: Build user-service
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Build with Maven
+      run: mvn -B test --file user-service/pom.xml
+
+  merge_pr:
+    needs: build
+    name: Auto merge pull request
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github.event) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Merge PR with label 'auto-pr'
+        uses: sudo-bot/action-pull-request-merge@v1.1.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ github.event.pull_request.number }}
+          filter-label: auto-pr
