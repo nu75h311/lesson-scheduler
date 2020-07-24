@@ -2,21 +2,19 @@ name: Create pull request to part 02
 on:
   push:
     branches:
-      - part-01-the-application
+    - part-01-the-application  # Support wildcard matching
+
 jobs:
   update_part_02:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: part-02-the-model-layer
-      - name: Reset part-02 branch
-        run: |
-          git fetch origin part-01-the-application:part-01-the-application
-          git reset --hard part-01-the-application
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          branch: part-02-promotion
-          title: changes from part-01 to part-02
-          labels: auto-pr
+    - uses: actions/checkout@v2
+    - name: pull-request
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: ""                                 # If blank, default: triggered branch
+        destination_branch: "part-02-the-model-layer"     # If blank, default: master
+        pr_title: "changes from part-01 to part-02"       # Title of pull request
+        pr_body: ":robot: *automated PR*"                 # Full markdown support, requires pr_title to be set
+        pr_label: "auto-pr"                               # Comma-separated list (no spaces)
+        github_token: ${{ secrets.GITHUB_TOKEN }}          
