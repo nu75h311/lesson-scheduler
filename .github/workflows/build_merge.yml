@@ -1,4 +1,4 @@
-name: Create pull request to part 02
+name: Build and merge PR
 on:
   pull_request:
     branches: '*'  # Support wildcard matching

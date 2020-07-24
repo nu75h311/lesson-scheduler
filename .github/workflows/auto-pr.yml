@@ -1,4 +1,4 @@
-name: Create pull request to part 02
+name: Create pull request
 on:
   push:
     branches: '*'  # Support wildcard matching
