@@ -18,3 +18,5 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           branch: part-02-promotion
+          title: changes from part-01 to part-02
+          labels: auto-pr
