@@ -17,6 +17,6 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          branch: part-02-promotion
+          branch: part-01-the-application
           title: changes from part-01 to part-02
           labels: auto-pr
