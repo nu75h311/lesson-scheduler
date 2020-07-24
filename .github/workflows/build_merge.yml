@@ -1,7 +1,8 @@
 name: Build and merge PR
 on:
   pull_request:
-    branches: '*'  # Support wildcard matching
+    types:
+    - labeled
 
 jobs:
         
