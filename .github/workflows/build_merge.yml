@@ -1,10 +1,8 @@
-name: Build and merge PR
+name: Build and merge
 on:
-  pull_request:
-    types:
-      - opened
-      - labeled
-      - edited
+  push:
+    branches:
+      - '*'
 
 jobs:
         
@@ -21,19 +19,16 @@ jobs:
     - name: Build with Maven
       run: mvn -B test --file user-service/pom.xml
 
-  merge_pr:
+  sync-branch:
     needs: build
-    name: Auto merge pull request
+    name: Synch next part
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github.event) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Merge PR with label 'auto-pr'
-        uses: sudo-bot/action-pull-request-merge@v1.1.1
+      - uses: actions/checkout@v2
+      - name: Merge part-01 -> part-02
+        uses: devmasx/merge-branch@v1.3.0
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ github.event.pull_request.number }}
-          filter-label: auto-pr
+          type: now
+          from_branch: part-01-the-application
+          target_branch: part-02-the-model-layer
+          github_token: ${{ secrets.GITHUB_TOKEN }}
