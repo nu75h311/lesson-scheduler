@@ -1,0 +1,20 @@
+name: Create pull request to part 02
+on:
+  push:
+    branches:
+      - part-01-the-application
+jobs:
+  update_part_02:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: part-02-the-model-layer
+      - name: Reset part-02 branch
+        run: |
+          git fetch origin part-01-the-application:part-01-the-application
+          git reset --hard part-01-the-application
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: part-01-the-application
