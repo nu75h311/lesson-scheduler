@@ -1,8 +1,6 @@
 name: Maven build with tests
 on:
   pull_request:
-    branches: 
-    - *
 
 jobs:
   build:
