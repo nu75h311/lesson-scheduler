@@ -1,0 +1,23 @@
+name: Create pull request
+on:
+  push:
+    branches: '*'  # Support wildcard matching
+
+jobs:
+        
+  create-pull-request:
+    name: Create pull request
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: pull-request
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: ""                                 # If blank, default: triggered branch
+        destination_branch: "part-02-the-model-layer"     # If blank, default: master
+        pr_title: "changes from part-01 to part-02"       # Title of pull request
+        pr_body: ":robot: *automated PR*"                 # Full markdown support, requires pr_title to be set
+        pr_label: "auto-pr"                               # Comma-separated list (no spaces)
+        github_token: ${{ secrets.GITHUB_TOKEN }}          
+        
