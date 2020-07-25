@@ -39,11 +39,12 @@ jobs:
       - build
     name: Merge pull request
     runs-on: ubuntu-latest
-  steps:
-    - name: merge a pull request
-      uses: sudo-bot/action-pull-request-merge@v1.1.1
-      with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ needs.create-pull-request.outputs.PULL_REQUEST_NUMBER }}
-          allowed-usernames-regex: ^williamdes$
-          filter-label: merge-it
+    
+    steps:
+      - name: merge a pull request
+        uses: sudo-bot/action-pull-request-merge@v1.1.1
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            number: ${{ needs.create-pull-request.outputs.PULL_REQUEST_NUMBER }}
+            allowed-usernames-regex: ^williamdes$
+            filter-label: merge-it
