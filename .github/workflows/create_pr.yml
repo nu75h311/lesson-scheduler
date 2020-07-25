@@ -1,4 +1,4 @@
-name: Build and merge
+name: Create PR and Build
 on:
   push:
     branches: '*'
@@ -8,10 +8,6 @@ jobs:
   create-pull-request:
     name: Create pull request
     runs-on: ubuntu-latest
-    
-    outputs:
-      pr-number: ${{ steps.pull.outputs.PULL_REQUEST_NUMBER }}
-
     steps:
       - name: Generate app token
         uses: tibdex/github-app-token@v1
@@ -27,7 +23,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           FROM_BRANCH: "part-01-the-application"
           TO_BRANCH: "part-02-the-model-layer"
-        
+                 
   build:
     name: Build user-service
     runs-on: ubuntu-latest
@@ -40,23 +36,3 @@ jobs:
           java-version: 11
       - name: Build with Maven
         run: mvn -B test --file user-service/pom.xml
-
-  merge:
-    needs:
-      - create-pull-request
-      - build
-    name: Merge pull request
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Generate app token
-        uses: tibdex/github-app-token@v1
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Merge pull request
-        uses: sudo-bot/action-pull-request-merge@v1.1.1
-        with:
-            github-token: ${{ steps.generate-token.outputs.token }}
-            number: ${{ needs.create-pull-request.outputs.pr-number }}
