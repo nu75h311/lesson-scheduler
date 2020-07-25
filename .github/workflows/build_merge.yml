@@ -41,6 +41,8 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: show outputs
+        run: echo ${{ needs.create-pull-request.outputs }}
       - name: merge a pull request
         uses: sudo-bot/action-pull-request-merge@v1.1.1
         with:
