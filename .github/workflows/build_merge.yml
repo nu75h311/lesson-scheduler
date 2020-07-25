@@ -42,7 +42,9 @@ jobs:
     
     steps:
       - name: show outputs
-        run: echo ${{ needs.create-pull-request.outputs }}
+        env:
+          NEEDS_CONTEXT: ${{ toJson(needs) }}
+        run: echo "$NEEDS_CONTEXT"
       - name: merge a pull request
         uses: sudo-bot/action-pull-request-merge@v1.1.1
         with:
