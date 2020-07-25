@@ -1,8 +1,7 @@
 name: Build and merge
 on:
   push:
-    branches:
-      - '*'
+    branches: '*'
 
 jobs:
 
@@ -14,12 +13,18 @@ jobs:
       pr-number: ${{ steps.pull.outputs.PULL_REQUEST_NUMBER }}
 
     steps:
+      - name: Generate app token
+        uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - uses: actions/checkout@v2
       - name: Opening pull request
         id: pull
         uses: tretuna/sync-branches@1.2.0
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           FROM_BRANCH: "part-01-the-application"
           TO_BRANCH: "part-02-the-model-layer"
         
@@ -44,8 +49,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: merge a pull request
+      - name: Generate app token
+        uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+      - name: Merge pull request
         uses: sudo-bot/action-pull-request-merge@v1.1.1
         with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
+            github-token: ${{ steps.generate-token.outputs.token }}
             number: ${{ needs.create-pull-request.outputs.pr-number }}
