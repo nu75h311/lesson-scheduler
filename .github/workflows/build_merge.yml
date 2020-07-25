@@ -44,14 +44,8 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: show outputs
-        env:
-          NEEDS_CONTEXT: ${{ toJson(needs) }}
-        run: echo "$NEEDS_CONTEXT"
       - name: merge a pull request
         uses: sudo-bot/action-pull-request-merge@v1.1.1
         with:
             github-token: ${{ secrets.GITHUB_TOKEN }}
             number: ${{ needs.create-pull-request.outputs.pr-number }}
-            allowed-usernames-regex: ^williamdes$
-            filter-label: merge-it
