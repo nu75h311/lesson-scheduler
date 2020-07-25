@@ -5,30 +5,45 @@ on:
       - '*'
 
 jobs:
+
+  create-pull-request:
+    name: Create pull request
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Opening pull request
+        id: pull
+        uses: tretuna/sync-branches@1.2.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FROM_BRANCH: "part-01-the-application"
+          TO_BRANCH: "part-02-the-model-layer"
         
   build:
     name: Build user-service
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-    - name: Build with Maven
-      run: mvn -B test --file user-service/pom.xml
-
-  sync-branch:
-    needs: build
-    name: Synch next part
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/checkout@v2
-      - name: Merge part-01 -> part-02
-        uses: devmasx/merge-branch@v1.3.0
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
         with:
-          type: now
-          from_branch: part-01-the-application
-          target_branch: part-02-the-model-layer
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          java-version: 11
+      - name: Build with Maven
+        run: mvn -B test --file user-service/pom.xml
+
+  merge:
+    needs:
+      - create-pull-request
+      - build
+    name: Merge pull request
+    runs-on: ubuntu-latest
+  steps:
+    - name: merge a pull request
+      uses: sudo-bot/action-pull-request-merge@v1.1.1
+      with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ needs.create-pull-request.outputs.PULL_REQUEST_NUMBER }}
+          allowed-usernames-regex: ^williamdes$
+          filter-label: merge-it
