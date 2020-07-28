@@ -1,0 +1,79 @@
+name: Test and create PR
+on:
+  push:
+    branches: 'part-*'
+
+jobs:
+
+  test:
+    name: Maven test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: user-service unit tests
+      run: mvn -B test --file user-service/pom.xml
+
+  set-destination-branch:
+    name: Set destination branch
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      ref_branch: ${{ steps.getname.outputs.ref_branch }}
+      dest_branch: ${{ env.DEST_BRANCH }}
+    env:
+      GITHUB_BRANCH: ${{ github.ref }}
+    steps:
+    - name: Get only the name
+      id: getname
+      run: |
+        echo "::set-output name=ref_branch::${GITHUB_BRANCH#refs/heads/}"
+    - name: If branch is part-01
+      if: contains(github.ref, 'part-01')
+      run: |
+        echo "::set-env name=DEST_BRANCH::part-02-the-model-layer"
+    - name: If branch is part-02
+      if: contains(github.ref, 'part-02')
+      run: |
+        echo "::set-env name=DEST_BRANCH::master"
+    - name: check DEST_BRANCH
+      run: echo "$DEST_BRANCH"
+
+  create-pull-request:
+    name: Create pull request
+    needs:
+      - set-destination-branch
+    runs-on: ubuntu-latest
+    steps:
+    - name: Generate app token
+      uses: tibdex/github-app-token@v1
+      id: generate-token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+    - name: Dump needs context
+      env:
+        NEEDS_CONTEXT: ${{ toJson(needs) }}
+      run: echo "$NEEDS_CONTEXT"
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ needs.set-destination-branch.outputs.dest_branch }}  
+    - name: Reset promotion branch
+      run: |
+        git fetch origin ${{ needs.set-destination-branch.outputs.ref_branch }}:${{ needs.set-destination-branch.outputs.ref_branch }}
+        git reset --hard ${{ needs.set-destination-branch.outputs.ref_branch }}
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ steps.generate-token.outputs.token }}
+        branch: "temp-promo-changes-in-${{ needs.set-destination-branch.outputs.ref_branch }}"
+        title: "Pulling ${{ needs.set-destination-branch.outputs.ref_branch }} into ${{ needs.set-destination-branch.outputs.dest_branch }}"
+        body: ":robot: Update from ${{ needs.set-destination-branch.outputs.ref_branch }}"
+        commit-message: "Update from ${{ needs.set-destination-branch.outputs.ref_branch }}"
+        labels: auto-pr, auto-merge
