@@ -1,0 +1,23 @@
+name: Merge pull request
+on:
+  pull_request:
+    branches: '*'
+
+jobs:
+  
+  automerge:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Generate app token
+      uses: tibdex/github-app-token@v1
+      id: generate-token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+    - name: Merge pull request
+      uses: "pascalgn/automerge-action@v0.8.5"
+      env:
+        GITHUB_TOKEN: "${{ steps.generate-token.outputs.token }}"
+        MERGE_LABELS: "auto-merge"
+        MERGE_COMMIT_MESSAGE: "pull-request-title"
+        MERGE_DELETE_BRANCH: "true"
