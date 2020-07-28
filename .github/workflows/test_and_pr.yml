@@ -1,7 +1,7 @@
 name: Test and create PR
 on:
   push:
-    branches: 'part-*'
+    branches: '*'
 
 jobs:
 
@@ -20,6 +20,7 @@ jobs:
       run: mvn -B test --file user-service/pom.xml
 
   set-destination-branch:
+    if: contains(github.ref, 'part-')
     name: Set destination branch
     needs: test
     runs-on: ubuntu-latest
@@ -45,6 +46,7 @@ jobs:
       run: echo "$DEST_BRANCH"
 
   create-pull-request:
+    if: contains(github.ref, 'part-')
     name: Create pull request
     needs:
       - set-destination-branch
