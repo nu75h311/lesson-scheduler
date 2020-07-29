@@ -43,7 +43,7 @@ jobs:
     - name: If branch is part-02
       if: contains(github.ref, 'part-02')
       run: |
-        echo "::set-env name=DEST_BRANCH::part-03-the-repository-layer"
+        echo "::set-env name=DEST_BRANCH::part-03-the-data-layer"
     - name: If branch is part-03
       if: contains(github.ref, 'part-03')
       run: |
