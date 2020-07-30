@@ -27,10 +27,14 @@ public class UserRepositoryTests {
     private UserRepository userRepository;
 
     public UserRepositoryTests() {
-        geddy = User.builder()
-                .firstName("Geddy").lastName("Lee").email("geddy.lee@email.com").build();
-        alex = User.builder()
-                .firstName("Alex").lastName("Lifeson").email("alex.lifeson@email.com").build();
+        geddy = User.builder().firstName("Geddy")
+                              .lastName("Lee")
+                              .email("geddy.lee@email.com")
+                              .build();
+        alex = User.builder().firstName("Alex")
+                             .lastName("Lifeson")
+                             .email("alex.lifeson@email.com")
+                             .build();
     }
 
     @BeforeEach
@@ -53,5 +57,17 @@ public class UserRepositoryTests {
                 () -> assertThat(users.contains(geddy)),
                 () -> assertThat(users.contains(alex)),
                 () -> assertThat(users.size()).isEqualTo(2));
+    }
+
+    @Test
+    @DisplayName("Find user by email")
+    public void testFindUserByEmail() {
+        User user = userRepository.findUserByEmail("alex.lifeson@email.com");
+
+        assertAll(
+                () -> assertThat(user.getId()).isNotNull(),
+                () -> assertThat(user.getFirstName()).isEqualTo("Alex"),
+                () -> assertThat(user.getLastName()).isEqualTo("Lifeson"),
+                () -> assertThat(user.getEmail()).isEqualTo("alex.lifeson@email.com"));
     }
 }
