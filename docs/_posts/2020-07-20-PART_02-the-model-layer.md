@@ -99,7 +99,7 @@ private static final String JSON_MISSING_FIRST_NAME_USER =
 
 @Test  @DisplayName("Validate that firstName is required")
 void testUserMissingFirstNameField() {
-    assertThrows(MismatchedInputException.class, () -> this.json.parse(jsonMissingFirstNameUser));
+    assertThrows(MismatchedInputException.class, () -> this.json.parse(JSON_MISSING_FIRST_NAME_USER));
 }
 ```
 
